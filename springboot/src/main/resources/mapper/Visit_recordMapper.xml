@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.Visit_recordMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(v_id) from visit_record
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+            <if test="v_id!=null and v_id!='' ">
+                and  v_id like  '%${v_id}%'
+            </if>
+            <if test="v_intime!=null">
+                and  v_intime = #{v_intime}
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getVisit_recordList" parameterType="Visit_record" resultType="Visit_record">
+        select * from visit_record
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+            <if test="v_id!=null and v_id!='' ">
+                and  v_id like  '%${v_id}%'
+            </if>
+            <if test="v_intime!=null">
+                and  v_intime = #{v_intime}
+            </if>
+        </where>
+        ORDER BY  v_id asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加访问记录信息-->
+    <insert id="addVisit_record" parameterType="Visit_record" keyProperty="v_id">
+        insert into Visit_record (d_did,v_id,v_intime,v_outtime,v_reason)
+        values(#{d_did},#{v_id},#{v_intime},#{v_outtime},#{v_reason})
+    </insert>
+
+    <!--通过id删除访问记录信息-->
+    <delete id="deleteVisit_record" parameterType="Visit_record" >
+        delete from visit_record where d_did=#{d_did} and v_id=#{v_id} and v_intime=#{v_intime}
+    </delete>
+
+    <!--修改访问记录信息-->
+    <update id="updateVisit_record" parameterType="Visit_record">
+        update visit_record
+        <set>
+            <if test="d_did!=null and d_did!=0">
+                d_did=#{d_did},
+            </if>
+            <if test="v_intime!=null">
+                v_intime=#{v_intime},
+            </if>
+            <if test="v_outtime!=null">
+                v_outtime=#{v_outtime},
+            </if>
+            <if test="v_reason!=null and v_reason!=''">
+                v_reason=#{v_reason}
+            </if>
+        </set>
+        <where>
+            v_id = #{v_id}
+        </where>
+    </update>
+
+    <!--通过did查找访问记录-->
+    <select id="findVisit_recordByDid"  parameterType="Integer" resultType="Visit_record" >
+        select * from visit_record where d_did=#{d_did}
+    </select>
+
+    <!--查找所有访问记录-->
+    <select id="getAll" resultType="Visit_record">
+        select * from visit_record
+    </select>
+
+</mapper>

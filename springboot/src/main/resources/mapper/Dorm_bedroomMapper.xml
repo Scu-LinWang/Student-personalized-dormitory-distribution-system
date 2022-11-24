@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.Dorm_bedroomMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(b_bid) from dorm_bedroom
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+            <if test="b_bid!=null and b_bid!=0 ">
+                and  b_bid like '%${b_bid}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getDorm_bedroomList" parameterType="Dorm_bedroom" resultType="Dorm_bedroom">
+        select * from dorm_bedroom
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+            <if test="b_bid!=null and b_bid!=0 ">
+                and  b_bid like '%${b_bid}%'
+            </if>
+        </where>
+        ORDER BY  d_did asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--增加学院信息-->
+    <insert id="addDorm_bedroom" parameterType="Dorm_bedroom"  keyProperty="d_did, b_bid">
+        insert into dorm_bedroom(d_did, b_bid)
+        values(#{d_did}, #{b_bid})
+    </insert>
+
+    <!--删除围合宿舍信息-->
+    <delete id="deleteDorm_bedroom" parameterType="Dorm_bedroom" >
+        delete from dorm_bedroom where d_did=#{d_did} and b_bid=#{b_bid}
+    </delete>
+
+    <!--修改学院信息-->
+    <update id="updateDorm_bedroom" parameterType="Dorm_bedroom"  keyProperty="d_did, b_bid">
+        update dorm_bedroom
+        <set>
+            <if test="d_did!=null and d_did!=0">
+                d_did=#{d_did},
+            </if>
+            <if test="b_bid!=null and b_bid!=0">
+                b_bid=#{b_bid}
+            </if>
+        </set>
+        <where>
+            d_did=#{d_did} and b_bid=#{b_bid}
+        </where>
+    </update>
+
+    <!--查找所有学院-->
+    <select id="getAll" resultType="Dorm_bedroom">
+        select * from dorm_bedroom
+    </select>
+</mapper>

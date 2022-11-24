@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.StudentMapper">
+
+    <!--登陆查询-->
+    <select id="findStudent" parameterType="Student" resultType="Student">
+        select * from student
+        <where>
+        <if test="s_sid!=null and s_sid!='' ">
+            s_sid = #{s_sid}
+        </if>
+        <if test="s_password!=null and s_password!='' ">
+            and s_password = #{s_password}
+        </if>
+        </where>
+    </select>
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(s_sid) from student
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+            <if test="s_name!=null and s_name!='' ">
+                and  s_name like  '%${s_name}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getStudentList" parameterType="Student" resultType="Student">
+        select * from student
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+            <if test="s_name!=null and s_name!='' ">
+                and  s_name like  '%${s_name}%'
+            </if>
+        </where>
+        ORDER BY  s_sid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加学生信息-->
+    <insert id="addStudent" parameterType="Student" keyProperty="s_sid" useGeneratedKeys="true">
+        insert into student (s_sid,s_name,s_sex,s_id,s_age,s_phone,s_password,
+                             d,i,s,c,sleep_time,get_time,hobby,activity)
+        values(#{s_sid},#{s_name},#{s_sex},#{s_id},#{s_age},#{s_phone},#{s_password},
+               #{d},#{i},#{s},#{c},#{sleep_time},#{get_time},#{hobby},#{activity})
+    </insert>
+
+    <!--通过Sid删除学生信息-->
+    <delete id="deleteStudent" parameterType="String" >
+        delete from student where s_sid=#{s_sid}
+    </delete>
+
+    <!--修改学生信息-->
+    <update id="updateStudent" parameterType="Student" keyProperty="s_sid">
+        update student
+        <set>
+            <if test="s_name!=null and s_name !=''">
+                s_name=#{s_name},
+            </if>
+            <if test="s_sex !=null and s_sex !=''">
+                s_sex=#{s_sex},
+            </if>
+            <if test="s_id !=null and s_id !=''">
+                s_id=#{s_id},
+            </if>
+            <if test="s_age !=null and s_age !=0">
+                s_age=#{s_age},
+            </if>
+            <if test="s_phone!=null and s_phone!=''">
+                a_phone=#{a_phone},
+            </if>
+            <if test="s_password!=null and s_password!=''">
+                s_password=#{s_password},
+            </if>
+            <if test="d!=null">
+                d=#{d},
+            </if>
+            <if test="i!=null">
+                i=#{i},
+            </if>
+            <if test="s!=null">
+                s=#{s},
+            </if>
+            <if test="c!=null">
+                c=#{c},
+            </if>
+            <if test="sleep_time!=null">
+                sleep_time=#{sleep_time},
+            </if>
+            <if test="get_time!=null">
+                get_time=#{get_time},
+            </if>
+            <if test="hobby!=null and hobby!=0">
+                hobby=#{hobby},
+            </if>
+            <if test="activity!=null and activity!=0">
+                activity=#{activity}
+            </if>
+        </set>
+        <where>
+            s_sid = #{s_sid}
+        </where>
+    </update>
+
+    <!--通过Sid查找学生-->
+    <select id="findStudentBySid"  parameterType="String" resultType="Student" >
+        select * from student where s_sid=#{s_sid}
+    </select>
+
+    <!--查找所有学生-->
+    <select id="getAll" resultType="Student">
+        select * from student
+    </select>
+
+</mapper>

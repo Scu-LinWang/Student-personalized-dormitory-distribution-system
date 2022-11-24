@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.Dorm_manageMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(d_did) from dorm_manage
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like '%${a_aid}%'
+            </if>
+            <if test="d_did!=null and d_did!=0 ">
+                and  d_did like '%${d_did}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getDorm_manageList" parameterType="Dorm_manage" resultType="Dorm_manage">
+        select * from dorm_manage
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like '%${a_aid}%'
+            </if>
+            <if test="d_did!=null and d_did!=0 ">
+                and  d_did like '%${d_did}%'
+            </if>
+        </where>
+        ORDER BY  a_aid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--增加围合管理信息-->
+    <insert id="addDorm_manage" parameterType="Dorm_manage"  keyProperty="a_aid, d_did">
+        insert into dorm_manage(a_aid, d_did)
+        values(#{a_aid}, #{d_did})
+    </insert>
+
+    <!--删除围合宿舍信息-->
+    <delete id="deleteDorm_manage" parameterType="Dorm_manage" >
+        delete from dorm_manage where a_aid=#{a_aid} and d_did=#{d_did}
+    </delete>
+
+    <!--修改围合管理信息-->
+    <update id="updateDorm_manage" parameterType="Dorm_manage"  keyProperty="a_aid, d_did">
+        update dorm_manage
+        <set>
+            <if test="a_aid!=null and a_aid!=''">
+                a_aid=#{a_aid},
+            </if>
+            <if test="d_did!=null and d_did!=0">
+                d_did=#{d_did}
+            </if>
+        </set>
+        <where>
+            a_aid=#{a_aid} and d_did=#{d_did}
+        </where>
+    </update>
+
+    <!--查找所有围合管理-->
+    <select id="getAll" resultType="Dorm_manage">
+        select * from dorm_manage
+    </select>
+</mapper>

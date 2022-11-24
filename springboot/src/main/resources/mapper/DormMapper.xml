@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.DormMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(d_did) from dorm
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getDormList" parameterType="Dorm" resultType="Dorm">
+        select * from dorm
+        <where>
+            <if test="d_did!=null and d_did!=0 ">
+                d_did like '%${d_did}%'
+            </if>
+        </where>
+        ORDER BY  d_did asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--增加宿舍信息-->
+    <insert id="addDorm" parameterType="Dorm"  keyProperty="d_did">
+        insert into dorm(d_did, d_college, d_sex, d_unitnum, d_bedroomnum, d_bednum)
+        values(#{d_did}, #{d_college}, #{d_sex}, #{d_unitnum}, #{d_bedroomnum}, #{d_bednum})
+    </insert>
+
+    <!--删除宿舍信息-->
+    <delete id="deleteDorm" parameterType="Integer" >
+        delete from dorm where d_did=#{d_did}
+    </delete>
+
+    <!--修改宿舍信息-->
+    <update id="updateDorm" parameterType="Dorm"  keyProperty="d_did">
+        update dorm
+        <set>
+            <if test="d_college!=null and d_college!=''">
+                d_college=#{d_college},
+            </if>
+            <if test="d_sex!=null and d_sex!=''">
+                d_sex=#{d_sex},
+            </if>
+            <if test="d_unitnum!=null and d_unitnum!=0">
+                d_unitnum=#{d_unitnum},
+            </if>
+            <if test="d_bedroomnum!=null and d_bedroomnum!=0">
+                d_bedroomnum=#{d_bedroomnum},
+            </if>
+            <if test="d_bednum!=null and d_bednum!=0">
+                d_bednum=#{d_bednum}
+            </if>
+        </set>
+        <where>
+            d_did=#{d_did}
+        </where>
+    </update>
+
+    <!--通过did查找宿舍-->
+    <select id="findDormByDid"  parameterType="Integer" resultType="Dorm" >
+        select * from dorm where d_did=#{d_did}
+    </select>
+
+    <!--查找所有宿舍-->
+    <select id="getAll" resultType="Dorm">
+        select * from dorm
+    </select>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.CollegeMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(college_major) from college
+        <where>
+            <if test="college_name!=null and college_name!='' ">
+                college_name like  '%${college_name}%'
+            </if>
+            <if test="college_major!=null and college_major!='' ">
+                and  college_major like  '%${college_major}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getCollegeList" parameterType="College" resultType="College">
+        select * from college
+        <where>
+            <if test="college_name!=null and college_name!='' ">
+                college_name like  '%${college_name}%'
+            </if>
+            <if test="college_major!=null and college_major!='' ">
+                and  college_major like  '%${college_major}%'
+            </if>
+        </where>
+        ORDER BY  college_name asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--增加学院信息-->
+    <insert id="addCollege" parameterType="College"  keyProperty="college_name, college_major">
+        insert into college(college_name, college_major)
+        values(#{college_name}, #{college_major})
+    </insert>
+
+    <!--删除管理员信息-->
+    <delete id="deleteCollege" parameterType="College" >
+        delete from college where college_name=#{college_name} and college_major=#{college_major}
+    </delete>
+
+    <!--修改学院信息-->
+    <update id="updateCollege" parameterType="College"  keyProperty="college_name, college_major">
+        update college
+        <set>
+            <if test="college_name!=null and college_name!=''">
+                college_name=#{college_name},
+            </if>
+            <if test="college_major!=null and college_major!=''">
+                college_major=#{college_major}
+            </if>
+        </set>
+        <where>
+            college_name=#{college_name} and college_major=#{college_major}
+        </where>
+    </update>
+
+    <!--查找所有学院-->
+    <select id="getAll" resultType="College">
+        select * from college
+    </select>
+</mapper>

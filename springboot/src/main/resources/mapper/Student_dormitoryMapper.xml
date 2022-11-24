@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.Student_dormitoryMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(s_sid) from Student_dormitory
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getStudent_dormitoryList" parameterType="Student_dormitory" resultType="Student_dormitory">
+        select * from student_dormitory
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+        </where>
+        ORDER BY s_sid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加学生宿舍信息-->
+    <insert id="addStudent_dormitory" parameterType="Student_dormitory" keyProperty="s_sid">
+        insert into student_dormitory (s_sid,d_did,s_unit,s_house,s_bedroom)
+        values(#{s_sid},#{d_did},#{s_unit},#{s_house},#{s_bedroom})
+    </insert>
+
+    <!--通过Sid删除学生宿舍信息-->
+    <delete id="deleteStudent_dormitory" parameterType="String" >
+        delete from student_dormitory where s_sid=#{s_sid}
+    </delete>
+
+    <!--修改学生宿舍信息-->
+    <update id="updateStudent_dormitory" parameterType="Student_dormitory" keyProperty="s_sid">
+        update student_dormitory
+        <set>
+            <if test="d_did!=null and d_did !=0">
+                d_did=#{d_did},
+            </if>
+            <if test="s_unit !=null and s_unit !=0">
+                s_unit=#{s_unit},
+            </if>
+            <if test="s_house !=null and s_house !=0">
+                s_house=#{s_house},
+            </if>
+            <if test="s_bedroom !=null and s_bedroom !=''">
+                s_bedroom=#{s_bedroom}
+            </if>
+        </set>
+        <where>
+            s_sid = #{s_sid}
+        </where>
+    </update>
+
+    <!--通过Sid查找学生宿舍-->
+    <select id="findStudent_dormitoryBySid"  parameterType="String" resultType="Student_dormitory" >
+        select * from student_dormitory where s_sid=#{s_sid}
+    </select>
+
+    <!--查找所有学生宿舍-->
+    <select id="getAll" resultType="Student_dormitory">
+        select * from student_dormitory
+    </select>
+
+</mapper>

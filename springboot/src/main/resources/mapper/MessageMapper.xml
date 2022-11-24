@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.MessageMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(m_time) from message
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like '%${a_aid}%'
+            </if>
+            <if test="s_sid!=null and s_sid!='' ">
+                and s_sid like '%${s_sid}%'
+            </if>
+            <if test="m_time!=null">
+                and m_time = #{m_time}
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getMessageList" parameterType="Message" resultType="Message">
+        select * from message
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like '%${a_aid}%'
+            </if>
+            <if test="s_sid!=null and s_sid!='' ">
+                and  s_sid like  '%${s_sid}%'
+            </if>
+            <if test="m_time!=null">
+                and  m_time = #{m_time}
+            </if>
+        </where>
+        ORDER BY  a_aid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加消息信息-->
+    <insert id="addMessage" parameterType="Message" keyProperty="a_aid, s_sid, m_time">
+        insert into message (a_aid,s_sid,message,m_time,receiver)
+        values(#{a_aid},#{s_sid},#{message},#{m_time},#{receiver})
+    </insert>
+
+    <!--通过id删除消息信息-->
+    <delete id="deleteMessage" parameterType="Message" >
+        delete from message
+        where a_aid=#{a_aid} and s_sid=#{s_sid} and m_time=#{m_time}
+    </delete>
+
+    <!--修改消息信息-->
+    <update id="updateMessage" parameterType="Message">
+        update message
+        <set>
+            <if test="message!=null and message!=''">
+                message = #{message},
+            </if>
+            <if test="receiver!=null">
+                receiver = #{receiver}
+            </if>
+        </set>
+        <where>
+            a_aid = #{a_aid} and s_sid = #{s_sid} and m_time = #{m_time}
+        </where>
+    </update>
+
+    <!--通过time查找消息-->
+    <select id="findMessageByTime"  parameterType="Message" resultType="Message" >
+        select * from message
+        where a_aid=#{a_aid} and s_sid=#{s_sid} and (m_time between #{stime} and #{etime})
+-- <!-- and <![CDATA[m_time >= #{stime,jdbcType=TIMESTAMP}]]> and <![CDATA[#{etime,jdbcType=TIMESTAMP} > m_time]]> -->
+    </select>
+
+    <!--查找所有消息-->
+    <select id="getAll" resultType="Message">
+        select * from message
+    </select>
+
+</mapper>

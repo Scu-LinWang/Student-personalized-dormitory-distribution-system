@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.AdminMapper">
+
+    <!--登陆查询-->
+    <select id="findAdmin" parameterType="Admin" resultType="Admin">
+        select * from admin
+        <where>
+        <if test="a_aid!=null and a_aid!='' ">
+            a_aid = #{a_aid}
+        </if>
+        <if test="a_password!=null and a_password!='' ">
+            and a_password = #{a_password}
+        </if>
+        </where>
+    </select>
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(a_aid) from admin
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like  '%${a_aid}%'
+            </if>
+            <if test="a_name!=null and a_name!='' ">
+                and  a_name like  '%${a_name}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getAdminList" parameterType="Admin" resultType="Admin">
+        select * from admin
+        <where>
+            <if test="a_aid!=null and a_aid!='' ">
+                a_aid like  '%${a_aid}%'
+            </if>
+            <if test="a_name!=null and a_name!='' ">
+                and  a_name like  '%${a_name}%'
+            </if>
+        </where>
+        ORDER BY  a_aid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加管理员信息-->
+    <insert id="addAdmin" parameterType="Admin" keyProperty="a_aid" useGeneratedKeys="true">
+        insert into admin (a_aid,a_name,a_sex,a_id,a_dept,a_password,a_phone)
+        values(#{a_aid},#{a_name},#{a_sex},#{a_id},#{a_dept},#{a_password},#{a_phone})
+    </insert>
+
+    <!--通过aid删除管理员信息-->
+    <delete id="deleteAdmin" parameterType="String" >
+        delete from admin where a_aid=#{a_aid}
+    </delete>
+
+    <!--修改管理员信息-->
+    <update id="updateAdmin" parameterType="Admin">
+        update admin
+        <set>
+            <if test="a_name!=null and a_name !=''">
+                a_name=#{a_name},
+            </if>
+            <if test="a_sex !=null and a_sex !=''">
+                a_sex=#{a_sex},
+            </if>
+            <if test="a_id !=null and a_id !=0">
+                a_id=#{a_id},
+            </if>
+            <if test="a_dept !=null and a_dept !=''">
+                a_dept=#{a_dept},
+            </if>
+            <if test="a_password!=null and a_password!=''">
+                a_password=#{a_password},
+            </if>
+            <if test="a_phone!=null and a_phone!=''">
+                a_phone=#{a_phone},
+            </if>
+        </set>
+        <where>
+            a_aid = #{a_aid}
+        </where>
+    </update>
+
+    <!--通过aid查找管理员-->
+    <select id="findAdminByAid"  parameterType="String" resultType="Admin" >
+        select * from admin where a_aid = #{a_aid}
+    </select>
+
+    <!--查找所有管理员-->
+    <select id="getAll" resultType="Admin">
+        select * from admin
+    </select>
+
+</mapper>

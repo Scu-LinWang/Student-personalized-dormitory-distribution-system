@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.Student_majorMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(s_sid) from student_major
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getStudent_majorList" parameterType="Student_major" resultType="Student_major">
+        select * from student_major
+        <where>
+            <if test="s_sid!=null and s_sid!='' ">
+                s_sid like  '%${s_sid}%'
+            </if>
+        </where>
+        ORDER BY s_sid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加学生专业信息-->
+    <insert id="addStudent_major" parameterType="Student_major" keyProperty="s_sid">
+        insert into student_major (s_sid,s_college,s_major)
+        values(#{s_sid},#{s_college},#{s_major})
+    </insert>
+
+    <!--通过Sid删除学生专业信息-->
+    <delete id="deleteStudent_major" parameterType="String" >
+        delete from student_major where s_sid=#{s_sid}
+    </delete>
+
+    <!--修改学生专业信息-->
+    <update id="updateStudent_major" parameterType="Student_major" keyProperty="s_sid">
+        update student_major
+        <set>
+            <if test="s_college!=null and s_college !='' ">
+                s_college = #{s_college},
+            </if>
+            <if test="s_major!=null and s_major!=''">
+                s_major = #{s_major}
+            </if>
+        </set>
+        <where>
+            s_sid = #{s_sid}
+        </where>
+    </update>
+
+    <!--通过Sid查找学生专业-->
+    <select id="findStudent_majorBySid"  parameterType="String" resultType="Student_major" >
+        select * from student_major where s_sid=#{s_sid}
+    </select>
+
+    <!--查找所有学生专业-->
+    <select id="getAll" resultType="Student_major">
+        select * from student_major
+    </select>
+
+</mapper>

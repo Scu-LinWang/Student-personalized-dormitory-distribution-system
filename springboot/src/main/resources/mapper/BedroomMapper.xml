@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.BedroomMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(b_bid) from bedroom
+        <where>
+            <if test="b_bid!=null and b_bid!=0 ">
+                b_bid like  '%${b_bid}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getBedroomList" parameterType="Bedroom" resultType="Bedroom">
+        select * from bedroom
+        <where>
+            <if test="b_bid!=null and b_bid!=0 ">
+                b_bid like  '%${b_bid}%'
+            </if>
+        </where>
+        ORDER BY  b_bid asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加寝室信息-->
+    <insert id="addBedroom" parameterType="Bedroom" keyProperty="b_bid" useGeneratedKeys="true">
+        insert into bedroom (b_bid,b_unit,b_house,b_bedroom,b_bed)
+        values(#{b_bid},#{b_unit},#{b_house},#{b_bedroom},#{b_bed})
+    </insert>
+
+    <!--通过bid删除寝室信息-->
+    <delete id="deleteBedroom" parameterType="Integer" >
+        delete from bedroom where b_bid=#{b_bid}
+    </delete>
+
+    <!--修改寝室信息-->
+    <update id="updateBedroom" parameterType="Bedroom">
+        update bedroom
+        <set>
+            <if test="b_unit!=null and b_unit !=0">
+                b_unit=#{b_unit},
+            </if>
+            <if test="b_house !=null and b_house !=0">
+                b_house=#{b_house},
+            </if>
+            <if test="b_bedroom !=null and b_bedroom !='' ">
+                b_bedroom=#{b_bedroom},
+            </if>
+            <if test="b_bed !=null">
+            <!--boolean类型不能使用!=''，否则报语法错误-->
+                b_bed = #{b_bed}
+            </if>
+        </set>
+        <where>
+            b_bid = #{b_bid}
+        </where>
+    </update>
+
+    <!--通过bid查找寝室-->
+    <select id="findBedroomByBid"  parameterType="Integer" resultType="Bedroom" >
+        select * from Bedroom where b_bid=#{b_bid}
+    </select>
+
+    <!--查找所有寝室-->
+    <select id="getAll" resultType="Bedroom">
+        select * from bedroom
+    </select>
+
+
+</mapper>

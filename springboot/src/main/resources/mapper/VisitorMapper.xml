@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dormitory.springboot.mapper.VisitorMapper">
+
+    <!--查询数据总数-->
+    <select id="totalCount"  resultType="Integer">
+        select count(v_id) from visitor
+        <where>
+            <if test="v_id!=null and v_id!='' ">
+                v_id like  '%${v_id}%'
+            </if>
+            <if test="v_name!=null and v_name!='' ">
+                and  v_name like  '%${v_name}%'
+            </if>
+        </where>
+    </select>
+
+    <!--分页查询-->
+    <select id="getVisitorList" parameterType="Visitor" resultType="Visitor">
+        select * from visitor
+        <where>
+            <if test="v_id!=null and v_id!='' ">
+                v_id like  '%${v_id}%'
+            </if>
+            <if test="v_name!=null and v_name!='' ">
+                and  v_name like  '%${v_name}%'
+            </if>
+        </where>
+        ORDER BY  v_id asc
+        limit #{currentPage},#{pageSize}
+    </select>
+
+    <!--添加访客信息-->
+    <insert id="addVisitor" parameterType="Visitor" keyProperty="v_id">
+        insert into visitor (v_id,v_name,v_phone)
+        values(#{v_id},#{v_name},#{v_phone})
+    </insert>
+
+    <!--通过aid删除访客信息-->
+    <delete id="deleteVisitor" parameterType="String" >
+        delete from visitor where v_id=#{v_id}
+    </delete>
+
+    <!--修改访客信息-->
+    <update id="updateVisitor" parameterType="Visitor">
+        update visitor
+        <set>
+            <if test="v_name!=null and v_name !=''">
+                v_name=#{v_name},
+            </if>
+            <if test="v_phone!=null and v_phone!=''">
+                v_phone=#{v_phone}
+            </if>
+        </set>
+        <where>
+            v_id = #{v_id}
+        </where>
+    </update>
+
+    <!--通过Id查找访客-->
+    <select id="findVisitorById"  parameterType="String" resultType="Visitor" >
+        select * from visitor where v_id=#{v_id}
+    </select>
+
+    <!--查找所有访客-->
+    <select id="getAll" resultType="Visitor">
+        select * from visitor
+    </select>
+
+</mapper>

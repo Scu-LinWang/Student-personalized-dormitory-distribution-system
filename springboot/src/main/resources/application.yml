@@ -1,0 +1,21 @@
+server:
+  port: 9090
+
+logging:
+  level:
+    com.dormitory.springboot.mapper: DEBUG
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dormitory?serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+
+
+mybatis:
+  #????resources?mapper?xml?????
+  #????mybatis??xml???classpath??resource???
+  mapper-locations: classpath:mapper/*.xml
+  #??xml????????
+  type-aliases-package: com.dormitory.springboot.entity
